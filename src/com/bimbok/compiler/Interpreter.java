@@ -15,7 +15,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
       for (Stmt statement : statements) {
         execute(statement);
       }
-    } catch (RuntimeErrorException error) {
+    } catch (RuntimeException error) {
       System.err.println(error.getMessage());
     }
   }
@@ -67,6 +67,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     Object right = evaluate(expr.right);
     if (expr.operator.type == TokenType.MINUS) {
       return -(double) right;
+    } else if (expr.operator.type == TokenType.BANG) {
+      return !isTruthy(right);
     }
     return null;
   }
@@ -77,14 +79,54 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
     Object right = evaluate(expr.right);
 
     switch (expr.operator.type) {
+      // Math
       case MINUS:
         return (double) left - (double) right;
-      case PLUS:
-        return (double) left + (double) right;
       case STAR:
         return (double) left * (double) right;
+      case SLASH:
+        return (double) left / (double) right;
+      case PLUS:
+        // Special: If either side is a String, concatenate!
+        if (left instanceof String || right instanceof String) {
+          return stringify(left) + stringify(right);
+        }
+        return (double) left + (double) right;
+
+      // Comparisons
+      case GREATER:
+        return (double) left > (double) right;
+      case GREATER_EQUAL:
+        return (double) left >= (double) right;
+      case LESS:
+        return (double) left < (double) right;
+      case LESS_EQUAL:
+        return (double) left <= (double) right;
+
+      // Equality
+      case BANG_EQUAL:
+        return !isEqual(left, right);
+      case EQUAL_EQUAL:
+        return isEqual(left, right);
     }
     return null;
+  }
+
+  // Helper for equality
+  private boolean isEqual(Object a, Object b) {
+    if (a == null && b == null)
+      return true;
+    if (a == null)
+      return false;
+    return a.equals(b);
+  }
+
+  private boolean isTruthy(Object object) {
+    if (object == null)
+      return false;
+    if (object instanceof Boolean)
+      return (boolean) object;
+    return true;
   }
 
   // --- Variable Access (NEW!) ---
@@ -114,5 +156,12 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   @Override
   public Object visitVariableExpr(Expr.Variable expr) {
     return environment.get(expr.name);
+  }
+
+  @Override
+  public Object visitAssignExpr(Expr.Assign expr) {
+    Object value = evaluate(expr.value);
+    environment.assign(expr.name, value);
+    return value;
   }
 }

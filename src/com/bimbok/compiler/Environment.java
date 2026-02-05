@@ -19,4 +19,10 @@ class Environment {
 
     throw new RuntimeException("Undefined variable '" + name.lexeme + "'.");
   }
+
+  void assign(Token name, Object value) {
+    // If it exists, update it. If not, create it (implicit declaration).
+    // Standard Java logic usually throws if not defined, but user asked for "oops I forgot say".
+    values.put(name.lexeme, value); 
+  }
 }

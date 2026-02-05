@@ -71,10 +71,6 @@ class Parser {
 
   // --- Expression Layers (Same as before) ---
 
-  private Expr expression() {
-    return term();
-  }
-
   private Expr term() {
     Expr expr = factor();
     while (match(PLUS, MINUS)) {
@@ -87,7 +83,7 @@ class Parser {
 
   private Expr factor() {
     Expr expr = unary();
-    while (match(STAR)) {
+    while (match(STAR, SLASH)) {
       Token operator = previous();
       Expr right = unary();
       expr = new Expr.Binary(expr, operator, right);
@@ -96,7 +92,7 @@ class Parser {
   }
 
   private Expr unary() {
-    if (match(MINUS)) {
+    if (match(MINUS, BANG)) {
       Token operator = previous();
       Expr right = unary();
       return new Expr.Unary(operator, right);
@@ -105,6 +101,15 @@ class Parser {
   }
 
   private Expr primary() {
+    if (match(FALSE))
+      return new Expr.Literal(false);
+
+    if (match(TRUE))
+      return new Expr.Literal(true);
+
+    if (match(STRING, NUMBER))
+      return new Expr.Literal(previous().literal);
+
     if (match(NUMBER))
       return new Expr.Literal(previous().literal);
 
@@ -181,6 +186,57 @@ class Parser {
       advance();
     }
   }
+
+  // 1. Expression now starts at the top: Assignment
+  private Expr expression() {
+    return assignment();
+  }
+
+  private Expr assignment() {
+    Expr expr = equality();
+
+    if (match(EQUALS)) {
+      Token equals = previous();
+      Expr value = assignment(); // Recursive for a = b = 5
+
+      if (expr instanceof Expr.Variable) {
+        Token name = ((Expr.Variable) expr).name;
+        return new Expr.Assign(name, value);
+      }
+
+      throw error(equals, "Invalid assignment target.");
+    }
+
+    return expr;
+  }
+
+  // 2. Equality: Checks for == and !=
+  private Expr equality() {
+    Expr expr = comparison();
+
+    while (match(BANG_EQUAL, EQUAL_EQUAL)) {
+      Token operator = previous();
+      Expr right = comparison();
+      expr = new Expr.Binary(expr, operator, right);
+    }
+
+    return expr;
+  }
+
+  // 3. Comparison: Checks for >, <, >=, <=
+  private Expr comparison() {
+    Expr expr = term();
+
+    while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
+      Token operator = previous();
+      Expr right = term();
+      expr = new Expr.Binary(expr, operator, right);
+    }
+
+    return expr;
+  }
+
+  // ... term(), factor(), unary() stay the same ...
 
   private static class ParseError extends RuntimeException {
   }

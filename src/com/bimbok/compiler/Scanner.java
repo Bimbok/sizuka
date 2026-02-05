@@ -19,6 +19,8 @@ public class Scanner {
     keywords = new HashMap<>();
     keywords.put("say", TokenType.SAY);
     keywords.put("out", TokenType.OUT);
+    keywords.put("true", TokenType.TRUE);
+    keywords.put("false", TokenType.FALSE);
   }
 
   public Scanner(String source) {
@@ -37,9 +39,10 @@ public class Scanner {
   private void scanToken() {
     char c = advance();
     switch (c) {
+      // --- Single Character Tokens ---
       case '(':
         addToken(TokenType.LEFT_PAREN);
-        break; // optional if you want parens
+        break;
       case ')':
         addToken(TokenType.RIGHT_PAREN);
         break;
@@ -52,11 +55,46 @@ public class Scanner {
       case '*':
         addToken(TokenType.STAR);
         break;
-      case '=':
-        addToken(TokenType.EQUALS);
+
+      // --- Division & Comments ---
+      case '/':
+        if (match('/')) {
+          // A comment goes until the end of the line.
+          while (peek() != '\n' && !isAtEnd())
+            advance();
+        } else {
+          addToken(TokenType.SLASH);
+        }
         break;
 
-      // Ignore whitespace
+      // --- Logic Operators (NEW: These replace your old '=' case) ---
+
+      // Checks: Is it "!" or "!="?
+      case '!':
+        addToken(match('=') ? TokenType.BANG_EQUAL : TokenType.BANG);
+        break;
+
+      // Checks: Is it "=" or "=="?
+      case '=':
+        addToken(match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUALS);
+        break;
+
+      // Checks: Is it "<" or "<="?
+      case '<':
+        addToken(match('=') ? TokenType.LESS_EQUAL : TokenType.LESS);
+        break;
+
+      // Checks: Is it ">" or ">="?
+      case '>':
+        addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
+        break;
+
+      // --- Strings (NEW) ---
+      case '"':
+        string();
+        break;
+
+      // --- Whitespace & Newlines ---
       case ' ':
       case '\r':
       case '\t':
@@ -146,5 +184,37 @@ public class Scanner {
   private void addToken(TokenType type, Object literal) {
     String text = source.substring(start, current);
     tokens.add(new Token(type, text, literal, line));
+  }
+
+  // Add this with other helper methods like number()
+
+  private void string() {
+    while (peek() != '"' && !isAtEnd()) {
+      if (peek() == '\n')
+        line++;
+      advance();
+    }
+
+    if (isAtEnd()) {
+      System.err.println("Unterminated string.");
+      return;
+    }
+
+    advance(); // The closing "
+
+    // Trim the surrounding quotes
+    String value = source.substring(start + 1, current - 1);
+    addToken(TokenType.STRING, value);
+  }
+
+  // Helper to check for two-character operators like '!='
+  private boolean match(char expected) {
+    if (isAtEnd())
+      return false;
+    if (source.charAt(current) != expected)
+      return false;
+
+    current++;
+    return true;
   }
 }
