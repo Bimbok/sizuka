@@ -1,0 +1,18 @@
+say x = 5
+if (x > 3) {
+  out "big"
+} else {
+  out "small"
+}
+
+say y = 2
+if (x > 0 and y < 3) {
+  out "x positive and y small"
+}
+
+say a = 1
+if (true) {
+  say a = 2
+  out a
+}
+out a

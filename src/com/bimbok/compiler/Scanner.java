@@ -19,6 +19,10 @@ public class Scanner {
     keywords = new HashMap<>();
     keywords.put("say", TokenType.SAY);
     keywords.put("out", TokenType.OUT);
+    keywords.put("if", TokenType.IF);
+    keywords.put("else", TokenType.ELSE);
+    keywords.put("and", TokenType.AND);
+    keywords.put("or", TokenType.OR);
     keywords.put("true", TokenType.TRUE);
     keywords.put("false", TokenType.FALSE);
   }
@@ -45,6 +49,12 @@ public class Scanner {
         break;
       case ')':
         addToken(TokenType.RIGHT_PAREN);
+        break;
+      case '{':
+        addToken(TokenType.LEFT_BRACE);
+        break;
+      case '}':
+        addToken(TokenType.RIGHT_BRACE);
         break;
       case '+':
         addToken(TokenType.PLUS);

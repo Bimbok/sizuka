@@ -1,0 +1,4 @@
+say a = 10
+say b = 2
+c = a / b
+out c

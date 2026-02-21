@@ -4,6 +4,10 @@ public enum TokenType {
   // 1. Keywords
   SAY,
   OUT,
+  IF,
+  ELSE,
+  AND,
+  OR,
 
   // 2. Literals
   IDENTIFIER,
@@ -19,6 +23,8 @@ public enum TokenType {
   // 4. Punctuation
   LEFT_PAREN, // (
   RIGHT_PAREN, // )
+  LEFT_BRACE, // {
+  RIGHT_BRACE, // }
 
   // 5. Logic Operators
   BANG, BANG_EQUAL, // ! and !=

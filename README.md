@@ -69,6 +69,34 @@ out (x + y) * 2
 
 ```
 
+### Control Flow
+
+Use `if` / `else` with blocks to branch:
+
+```text
+say x = 5
+if (x > 3) {
+  out "big"
+} else {
+  out "small"
+}
+```
+
+You can combine conditions with `and` / `or`:
+
+```text
+if (x > 0 and x < 10) {
+  out "single digit"
+}
+```
+
+Parentheses around the condition are optional, and `{}` are optional for a single statement:
+
+```text
+if x > 3 out "big"
+if (x > 3) out "big"
+```
+
 ## 🏗️ Architecture
 
 Sizuka is built as a three-stage pipeline:
