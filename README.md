@@ -97,6 +97,8 @@ if x > 3 out "big"
 if (x > 3) out "big"
 ```
 
+REPL note: multi-line input is supported; when a block is open, the prompt changes to `|` and waits for the closing `}`.
+
 ## 🏗️ Architecture
 
 Sizuka is built as a three-stage pipeline:
