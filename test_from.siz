@@ -1,0 +1,8 @@
+from 1 to 5 as i {
+    out "Outer: " + i
+    from (i + 1) to 10 as j {
+        if (j > 7) {
+            out "Inner: " + j
+        }
+    }
+}

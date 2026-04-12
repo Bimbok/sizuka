@@ -4,10 +4,29 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.charset.Charset;
 
 public class Main {
   public static void main(String[] args) throws IOException {
-    runPrompt();
+    if (args.length > 1) {
+      System.out.println("Usage: sizuka [script]");
+      System.exit(64);
+    } else if (args.length == 1) {
+      // If a file is passed (e.g., test.siz), run the file!
+      runFile(args[0]);
+    } else {
+      // Otherwise, open the interactive shell
+      runPrompt();
+    }
+  }
+
+  // NEW: Method to read and execute a whole file
+  private static void runFile(String path) throws IOException {
+    byte[] bytes = Files.readAllBytes(Paths.get(path));
+    String source = new String(bytes, Charset.defaultCharset());
+    run(source);
   }
 
   // This creates an interactive shell (REPL)

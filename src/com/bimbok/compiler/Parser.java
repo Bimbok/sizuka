@@ -52,12 +52,15 @@ class Parser {
 
   // 2. Statement: "out ..." or "1+1"
   private Stmt statement() {
+    if (match(FROM))
+      return fromStatement();
     if (match(IF))
       return ifStatement();
     if (match(OUT))
       return printStatement();
     if (match(LEFT_BRACE))
       return new Stmt.Block(block());
+    if (match(IN)) return inputStatement();
     return expressionStatement();
   }
 
@@ -65,6 +68,32 @@ class Parser {
   private Stmt printStatement() {
     Expr value = expression();
     return new Stmt.Print(value);
+  }
+
+  // Handle: in "Prompt" a OR in a
+  private Stmt inputStatement() {
+    Expr prompt = null;
+
+    // If we see a string immediately after 'in', save it as the prompt
+    if (check(STRING)) {
+      prompt = expression();
+    }
+
+    // After the optional prompt, we MUST have the variable name
+    Token name = consume(IDENTIFIER, "Expect variable name after 'in'.");
+
+    return new Stmt.Input(name, prompt);
+  }
+
+  // Handle: from start to end as i { body }
+  private Stmt fromStatement() {
+    Expr start = expression();
+    consume(TO, "Expect 'to' after start expression.");
+    Expr end = expression();
+    consume(AS, "Expect 'as' after end expression.");
+    Token loopVar = consume(IDENTIFIER, "Expect loop variable name.");
+    Stmt body = statement();
+    return new Stmt.From(start, end, loopVar, body);
   }
 
   // Handle: 1 + 1 (just calculating)

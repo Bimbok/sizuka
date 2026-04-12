@@ -1,0 +1,2 @@
+#!/bin/bash
+java -cp bin com.bimbok.compiler.Main "$@"

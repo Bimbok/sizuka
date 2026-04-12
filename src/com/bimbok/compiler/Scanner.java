@@ -25,6 +25,10 @@ public class Scanner {
     keywords.put("or", TokenType.OR);
     keywords.put("true", TokenType.TRUE);
     keywords.put("false", TokenType.FALSE);
+    keywords.put("in", TokenType.IN);
+    keywords.put("from", TokenType.FROM);
+    keywords.put("to", TokenType.TO);
+    keywords.put("as", TokenType.AS);
   }
 
   public Scanner(String source) {

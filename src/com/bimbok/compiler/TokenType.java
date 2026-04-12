@@ -8,7 +8,10 @@ public enum TokenType {
   ELSE,
   AND,
   OR,
-
+  IN,
+  FROM,
+  TO,
+  AS,
   // 2. Literals
   IDENTIFIER,
   NUMBER,

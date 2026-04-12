@@ -1,0 +1,13 @@
+in "Enter the number: " num1
+
+if ( num1 > 12 ) {
+    if (num1 > 15 ) {
+        out "Nice !!"
+    }
+    else {
+        out "Not Nice!!.."
+    }
+}
+else {
+    out "Not Not Nice"
+}

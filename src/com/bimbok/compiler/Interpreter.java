@@ -60,6 +60,58 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   }
 
   @Override
+  public Void visitInputStmt(Stmt.Input stmt) {
+    // 1. Print the prompt if the user provided one
+    if (stmt.prompt != null) {
+      Object promptValue = evaluate(stmt.prompt);
+      System.out.print(Colors.CYAN + stringify(promptValue) + " " + Colors.RESET);
+    } else {
+      // If no prompt, just print a subtle ? so the user knows to type
+      System.out.print(Colors.YELLOW + "? " + Colors.RESET);
+    }
+
+    // 2. Read the user's input
+    @SuppressWarnings("resource")
+    java.util.Scanner scanner = new java.util.Scanner(System.in);
+    String input = scanner.nextLine();
+
+    // 3. Try to save it as a number so math works smoothly.
+    // If it's a word (like a name), it will stay a String.
+    Object value;
+    try {
+      value = Double.parseDouble(input);
+    } catch (NumberFormatException e) {
+      value = input;
+    }
+
+    // 4. Save it into the Environment (this implicitly creates it if needed!)
+    environment.assign(stmt.name, value);
+
+    return null;
+  }
+
+  @Override
+  public Void visitFromStmt(Stmt.From stmt) {
+    Object startVal = evaluate(stmt.start);
+    Object endVal = evaluate(stmt.end);
+
+    if (!(startVal instanceof Double) || !(endVal instanceof Double)) {
+      throw new RuntimeException("Range must be numbers.");
+    }
+
+    double start = (double) startVal;
+    double end = (double) endVal;
+
+    // Use a standard loop. i is re-evaluated and assigned in the environment on each iteration
+    for (double i = start; i <= end; i++) {
+      environment.define(stmt.loopVar.lexeme, i);
+      execute(stmt.body);
+    }
+
+    return null;
+  }
+
+  @Override
   public Void visitBlockStmt(Stmt.Block stmt) {
     executeBlock(stmt.statements, new Environment(environment));
     return null;

@@ -15,6 +15,8 @@ abstract class Stmt {
     R visitIfStmt(If stmt);
 
     R visitBlockStmt(Block stmt);
+    R visitInputStmt(Input stmt);
+    R visitFromStmt(From stmt);
   }
 
   // 1. "out 10;"
@@ -90,6 +92,41 @@ abstract class Stmt {
     @Override
     <R> R accept(Visitor<R> visitor) {
       return visitor.visitBlockStmt(this);
+    }
+  }
+  // 6. "in prompt? varName"
+  static class Input extends Stmt {
+    final Token name;
+    final Expr prompt;
+
+    Input(Token name, Expr prompt) {
+      this.name = name;
+      this.prompt = prompt;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitInputStmt(this);
+    }
+  }
+
+  // 7. "from start to end as i { body }"
+  static class From extends Stmt {
+    final Expr start;
+    final Expr end;
+    final Token loopVar;
+    final Stmt body;
+
+    From(Expr start, Expr end, Token loopVar, Stmt body) {
+      this.start = start;
+      this.end = end;
+      this.loopVar = loopVar;
+      this.body = body;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitFromStmt(this);
     }
   }
 }

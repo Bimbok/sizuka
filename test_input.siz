@@ -1,0 +1,7 @@
+say name
+in "What is your name?" name
+out "Hello, " + name
+
+in "Enter a number:" num1
+in "Enter another number:" num2
+out "The total is: " + (num1 + num2)
