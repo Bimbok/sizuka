@@ -1,0 +1,9 @@
+out "--- Multiplication Table Generator ---"
+in "Which number's table do you want? " num
+
+out "Generating table for " + num + "..."
+
+from 1 to 10 as i {
+    // Sizuka handles string concatenation perfectly!
+    out num + " x " + i + " = " + (num * i)
+}

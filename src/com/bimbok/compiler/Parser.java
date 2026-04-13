@@ -54,6 +54,8 @@ class Parser {
   private Stmt statement() {
     if (match(FROM))
       return fromStatement();
+    if (match(WHILE))
+      return whileStatement();
     if (match(IF))
       return ifStatement();
     if (match(OUT))
@@ -121,6 +123,21 @@ class Parser {
     return new Stmt.If(condition, thenBranch, elseBranch);
   }
 
+  // Handle: while (condition) statement
+  private Stmt whileStatement() {
+    Expr condition;
+    if (match(LEFT_PAREN)) {
+      condition = expression();
+      consume(RIGHT_PAREN, "Expect ')' after while condition.");
+    } else {
+      condition = expression();
+    }
+
+    Stmt body = statement();
+
+    return new Stmt.While(condition, body);
+  }
+
   // Handle: { declaration* }
   private List<Stmt> block() {
     List<Stmt> statements = new ArrayList<>();
@@ -150,7 +167,7 @@ class Parser {
 
   private Expr factor() {
     Expr expr = unary();
-    while (match(STAR, SLASH)) {
+    while (match(STAR, SLASH, MODULO)) {
       Token operator = previous();
       Expr right = unary();
       expr = new Expr.Binary(expr, operator, right);

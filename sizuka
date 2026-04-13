@@ -1,2 +1,2 @@
 #!/bin/bash
-java -cp bin com.bimbok.compiler.Main "$@"
+java -cp /home/bimbok/shared/code/working_on/Sizuka/bin com.bimbok.compiler.Main "$@"

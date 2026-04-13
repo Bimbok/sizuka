@@ -12,6 +12,7 @@ public enum TokenType {
   FROM,
   TO,
   AS,
+  WHILE,
   // 2. Literals
   IDENTIFIER,
   NUMBER,
@@ -21,6 +22,7 @@ public enum TokenType {
   MINUS, // -
   STAR, // *
   SLASH, // /
+  MODULO, // %
   EQUALS, // =
 
   // 4. Punctuation

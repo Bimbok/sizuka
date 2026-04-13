@@ -112,6 +112,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   }
 
   @Override
+  public Void visitWhileStmt(Stmt.While stmt) {
+    while (isTruthy(evaluate(stmt.condition))) {
+      execute(stmt.body);
+    }
+    return null;
+  }
+
+  @Override
   public Void visitBlockStmt(Stmt.Block stmt) {
     executeBlock(stmt.statements, new Environment(environment));
     return null;
@@ -153,6 +161,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
         return (double) left * (double) right;
       case SLASH:
         return (double) left / (double) right;
+      case MODULO:
+        return (double) left % (double) right;
       case PLUS:
         // Special: If either side is a String, concatenate!
         if (left instanceof String || right instanceof String) {

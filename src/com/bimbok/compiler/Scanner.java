@@ -29,6 +29,7 @@ public class Scanner {
     keywords.put("from", TokenType.FROM);
     keywords.put("to", TokenType.TO);
     keywords.put("as", TokenType.AS);
+    keywords.put("while", TokenType.WHILE);
   }
 
   public Scanner(String source) {
@@ -68,6 +69,9 @@ public class Scanner {
         break;
       case '*':
         addToken(TokenType.STAR);
+        break;
+      case '%':
+        addToken(TokenType.MODULO);
         break;
 
       // --- Division & Comments ---

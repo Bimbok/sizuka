@@ -1,0 +1,10 @@
+out "--- Sizuka Factorial Calculator ---"
+in "Enter a positive number: " n
+
+say result = 1
+
+from 1 to n as i {
+    result = result * i
+}
+
+out "The factorial of " + n + " is: " + result

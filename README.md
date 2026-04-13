@@ -7,10 +7,10 @@
 ## ⚡ Features
 
 - **Custom Syntax:** Clean, command-based keywords (`say`, `out`).
-- **Arithmetic Engine:** Full support for mathematical expressions (`+`, `-`, `*`) with correct operator precedence.
+- **Arithmetic Engine:** Full support for mathematical expressions (`+`, `-`, `*`, `/`, `%`) with correct operator precedence.
 - **Variables:** Dynamic variable declaration and resolution using environments.
 - **Control Flow:** Full support for `if`/`else` branching and logical operators (`and`, `or`).
-- **Bounded Loops:** Powerful `from` loop for iteration.
+- **Loops:** Support for both bounded `from` loops and classic `while` loops.
 - **REPL:** Interactive shell (Read-Eval-Print Loop) for instant code execution.
 - **Error Handling:** Graceful syntax error reporting without crashing the runtime.
 
@@ -68,6 +68,7 @@ out "Next year you will be: " + (age + 1)
 ```
 
 **Features:**
+
 - **Optional Prompt:** If a string is provided immediately after `in`, it is used as a prompt. Otherwise, a default `?` is shown.
 - **Smart Parsing:** Sizuka automatically converts input to numbers if possible, enabling immediate mathematical operations.
 - **Implicit Declaration:** If the variable name doesn't exist, it is created automatically in the current scope.
@@ -81,6 +82,14 @@ say x = 10
 say y = 20
 out (x + y) * 2
 // Output: 60
+```
+
+#### Modulo Operation (`%`)
+The modulo operator returns the remainder of a division.
+```text
+say remainder = 10 % 3
+out remainder
+// Output: 1
 ```
 
 ### Control Flow
@@ -104,8 +113,9 @@ if (x > 0 and x < 10) {
 }
 ```
 
-### Loops (`from` ... `to` ... `as`)
+### Loops
 
+#### 1. Bounded Loops (`from` ... `to` ... `as`)
 Sizuka features a bounded `from` loop for iteration. It allows you to specify a start value, an end value, and a loop variable name.
 
 **Syntax:**
@@ -115,20 +125,35 @@ from <start_expr> to <end_expr> as <variable_name> {
 }
 ```
 
-**Key Characteristics:**
-- **Dynamic Bounds:** Both `start` and `end` can be any valid expression (e.g., `(i + 1) * 2`).
-- **Scoping:** The loop variable is automatically managed in the environment on each iteration.
-- **Nesting:** Supports infinite nesting of loops, `if` statements, and blocks.
-
 **Example:**
 ```text
 from 1 to 5 as i {
-    out "Outer: " + i
-    from (i + 1) to 10 as j {
-        if (j > 7) {
-            out "Inner: " + j
-        }
-    }
+    out "Iteration: " + i
+}
+```
+
+#### 2. While Loops (`while`)
+The `while` loop repeatedly executes a block of code as long as a specified condition is true.
+
+**Syntax:**
+```text
+while (condition) {
+    // body statements
+}
+```
+*Note: Parentheses around the condition are optional.*
+
+**Key Features:**
+- **Dynamic Condition:** The condition is re-evaluated before every iteration.
+- **Infinite Nesting:** You can nest `while` loops inside other loops, `if` statements, or blocks.
+- **Scoping:** Correctly interacts with lexical scopes.
+
+**Example:**
+```text
+say count = 1
+while count <= 3 {
+    out "Count is: " + count
+    count = count + 1
 }
 ```
 
@@ -155,7 +180,6 @@ Sizuka is built as a three-stage pipeline:
 
 Future updates planned for Sizuka:
 
-- [ ] While loops
 - [ ] Function definitions (`fun`)
 - [ ] List/Array types
 - [ ] Standard Library (Math, String utils)

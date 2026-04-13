@@ -1,0 +1,18 @@
+out "--- Fibonacci Sequence Generator ---"
+in "How many terms do you want to see? " terms
+
+say a = 0
+say b = 1
+
+out "Here are the first " + terms + " terms:"
+
+from 1 to terms as i {
+    out a
+
+    // Calculate the next number and shift the values
+    say nextNum = a + b
+    a = b
+    b = nextNum
+}
+
+out "Done!"

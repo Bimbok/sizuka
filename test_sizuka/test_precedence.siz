@@ -1,0 +1,12 @@
+// 1. Math Precedence (*, /, % happen before +, -)
+say a = 10 + 2 * 6 % 4 - 1
+out "Test 1 (Expect 9): " + a
+
+// 2. Parentheses Override
+say b = (10 + 2) * 6 % (4 - 1)
+out "Test 2 (Expect 0): " + b
+
+// 3. The "Everything" Statement
+// Tests Unary (!), Math (+, %, *), Comparison (>), Equality (==), and Logic (and, or) all at once!
+say c = 5 + 10 % 3 * 2 == 7 and 10 / 2 > 3 or !true
+out "Test 3 (Expect true): " + c

@@ -1,0 +1,102 @@
+// ==========================================
+//    SIZUKA BANKING SYSTEM & ATM
+// ==========================================
+
+// --- Initial Account State ---
+say pin = 1234
+say balance = 1500
+say attempts = 0
+say locked = false
+say authenticated = false
+
+out "======================================"
+out "      Welcome to Sizuka Bank ATM      "
+out "======================================"
+
+// --- 1. Authentication Loop ---
+// Tests: while, ! (not), and, in, if/else, ==, +, -
+while (!authenticated and !locked) {
+    in "Please enter your 4-digit PIN: " user_pin
+
+    if (user_pin == pin) {
+        authenticated = true
+        out "Login successful!\n"
+    } else {
+        attempts = attempts + 1
+        say left = 3 - attempts
+
+        if (left == 0) {
+            locked = true
+            out "ACCOUNT LOCKED DUE TO TOO MANY FAILED ATTEMPTS."
+        } else {
+            out "Incorrect PIN. Attempts remaining: " + left + "\n"
+        }
+    }
+}
+
+// --- 2. Main Menu Loop ---
+// Tests: nested blocks, >, <=, or, modulo (%)
+say running = true
+
+while (authenticated and running) {
+    out "--- Main Menu ---"
+    out "1. Check Balance"
+    out "2. Deposit Funds"
+    out "3. Withdraw Funds"
+    out "4. Exit"
+
+    in "Choose an option (1-4): " choice
+
+    // Feature 1: Balance
+    if (choice == 1) {
+        out "Your current balance is: $" + balance
+        out ""
+    }
+
+    // Feature 2: Deposit
+    if (choice == 2) {
+        in "Enter deposit amount: $" amount
+        if (amount > 0) {
+            balance = balance + amount
+            out "Deposit successful. New balance: $" + balance
+        } else {
+            out "Invalid amount. Must be greater than 0."
+        }
+        out ""
+    }
+
+    // Feature 3: Withdraw (Tests modulo and complex logic)
+    if (choice == 3) {
+        in "Enter withdrawal amount (Multiples of 10): $" amount
+
+        // Use Modulo (%) to enforce ATM bill constraints
+        if (amount % 10 != 0) {
+            out "Error: This ATM only dispenses $10 and $20 bills."
+        } else {
+            if (amount > 0 and amount <= balance) {
+                balance = balance - amount
+                out "Dispensing cash..."
+                out "Please take your $" + amount
+                out "New balance: $" + balance
+            } else {
+                if (amount > balance) {
+                    out "Insufficient funds!"
+                } else {
+                    out "Invalid amount."
+                }
+            }
+        }
+        out ""
+    }
+
+    // Feature 4: Exit
+    if (choice == 4) {
+        out "Thank you for using Sizuka Bank. Goodbye!"
+        running = false
+    }
+
+    // Feature 5: Error Handling
+    if (choice < 1 or choice > 4) {
+        out "Invalid selection. Please choose 1-4.\n"
+    }
+}

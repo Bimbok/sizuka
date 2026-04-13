@@ -1,0 +1,10 @@
+say count = 1
+while (count <= 3) {
+    out "Outer: " + count
+    say inner = 1
+    while inner <= 2 {
+        out "  Inner: " + inner
+        inner = inner + 1
+    }
+    count = count + 1
+}
