@@ -21,6 +21,61 @@ abstract class Expr {
     R visitAssignExpr(Assign expr);
 
     R visitLogicalExpr(Logical expr);
+
+    R visitPackLiteralExpr(PackLiteral expr);
+
+    R visitIndexGetExpr(IndexGet expr);
+
+    R visitIndexSetExpr(IndexSet expr);
+  }
+
+  static class PackLiteral extends Expr {
+    final List<Expr> elements;
+
+    PackLiteral(List<Expr> elements) {
+      this.elements = elements;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitPackLiteralExpr(this);
+    }
+  }
+
+  static class IndexGet extends Expr {
+    final Expr object;
+    final Token bracket;
+    final Expr index;
+
+    IndexGet(Expr object, Token bracket, Expr index) {
+      this.object = object;
+      this.bracket = bracket;
+      this.index = index;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitIndexGetExpr(this);
+    }
+  }
+
+  static class IndexSet extends Expr {
+    final Expr object;
+    final Token bracket;
+    final Expr index;
+    final Expr value;
+
+    IndexSet(Expr object, Token bracket, Expr index, Expr value) {
+      this.object = object;
+      this.bracket = bracket;
+      this.index = index;
+      this.value = value;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitIndexSetExpr(this);
+    }
   }
 
   static class Assign extends Expr {

@@ -1,0 +1,16 @@
+say myPack = [10, 20, 30]
+out "Original Pack: " + myPack
+
+out "Index 0: " + myPack[0]
+out "Index 1: " + myPack[1]
+out "Index 2: " + myPack[2]
+
+myPack[1] = 99
+out "Modified Index 1: " + myPack[1]
+out "Final Pack: " + myPack
+
+say empty = []
+out "Empty Pack: " + empty
+
+say nested = [[1, 2], [3, 4]]
+out "Nested Index [1][0]: " + nested[1][0]

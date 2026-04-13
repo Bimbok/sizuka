@@ -181,7 +181,24 @@ class Parser {
       Expr right = unary();
       return new Expr.Unary(operator, right);
     }
-    return primary();
+    return call();
+  }
+
+  private Expr call() {
+    Expr expr = primary();
+
+    while (true) {
+      if (match(LEFT_BRACKET)) {
+        Token bracket = previous();
+        Expr index = expression();
+        consume(RIGHT_BRACKET, "Expect ']' after pack index.");
+        expr = new Expr.IndexGet(expr, bracket, index);
+      } else {
+        break;
+      }
+    }
+
+    return expr;
   }
 
   private Expr primary() {
@@ -205,6 +222,17 @@ class Parser {
       Expr expr = expression();
       consume(RIGHT_PAREN, "Expect ')' after expression.");
       return new Expr.Grouping(expr);
+    }
+
+    if (match(LEFT_BRACKET)) {
+      List<Expr> elements = new ArrayList<>();
+      if (!check(RIGHT_BRACKET)) {
+        do {
+          elements.add(expression());
+        } while (match(COMMA));
+      }
+      consume(RIGHT_BRACKET, "Expect ']' after pack elements.");
+      return new Expr.PackLiteral(elements);
     }
 
     throw error(peek(), "Expect expression.");
@@ -288,6 +316,9 @@ class Parser {
       if (expr instanceof Expr.Variable) {
         Token name = ((Expr.Variable) expr).name;
         return new Expr.Assign(name, value);
+      } else if (expr instanceof Expr.IndexGet) {
+        Expr.IndexGet get = (Expr.IndexGet) expr;
+        return new Expr.IndexSet(get.object, get.bracket, get.index, value);
       }
 
       throw error(equals, "Invalid assignment target.");
@@ -345,8 +376,6 @@ class Parser {
 
     return expr;
   }
-
-  // ... term(), factor(), unary() stay the same ...
 
   private static class ParseError extends RuntimeException {
   }

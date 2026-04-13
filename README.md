@@ -9,6 +9,7 @@
 - **Custom Syntax:** Clean, command-based keywords (`say`, `out`).
 - **Arithmetic Engine:** Full support for mathematical expressions (`+`, `-`, `*`, `/`, `%`) with correct operator precedence.
 - **Variables:** Dynamic variable declaration and resolution using environments.
+- **Data Structures:** Built-in support for `packs` (dynamic arrays).
 - **Control Flow:** Full support for `if`/`else` branching and logical operators (`and`, `or`).
 - **Loops:** Support for both bounded `from` loops and classic `while` loops.
 - **REPL:** Interactive shell (Read-Eval-Print Loop) for instant code execution.
@@ -92,6 +93,33 @@ out remainder
 // Output: 1
 ```
 
+### Packs (Arrays)
+
+A `pack` is a dynamic, zero-indexed collection of elements.
+
+**Creation:**
+```text
+say myPack = [10, 20, "Hello"]
+say empty = []
+```
+
+**Accessing Elements:**
+```text
+out myPack[0] // 10
+```
+
+**Modifying Elements:**
+```text
+myPack[1] = 99
+out myPack[1] // 99
+```
+
+**Nesting:**
+```text
+say grid = [[1, 2], [3, 4]]
+out grid[1][0] // 3
+```
+
 ### Control Flow
 
 Use `if` / `else` with blocks to branch:
@@ -143,11 +171,6 @@ while (condition) {
 ```
 *Note: Parentheses around the condition are optional.*
 
-**Key Features:**
-- **Dynamic Condition:** The condition is re-evaluated before every iteration.
-- **Infinite Nesting:** You can nest `while` loops inside other loops, `if` statements, or blocks.
-- **Scoping:** Correctly interacts with lexical scopes.
-
 **Example:**
 ```text
 say count = 1
@@ -181,8 +204,8 @@ Sizuka is built as a three-stage pipeline:
 Future updates planned for Sizuka:
 
 - [ ] Function definitions (`fun`)
-- [ ] List/Array types
 - [ ] Standard Library (Math, String utils)
+- [ ] Better Error Reporting (Stack Traces)
 
 ## 📄 License
 

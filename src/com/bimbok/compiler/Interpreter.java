@@ -255,6 +255,65 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   }
 
   @Override
+  public Object visitPackLiteralExpr(Expr.PackLiteral expr) {
+    java.util.List<Object> elements = new java.util.ArrayList<>();
+    for (Expr element : expr.elements) {
+      elements.add(evaluate(element));
+    }
+    return elements;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public Object visitIndexGetExpr(Expr.IndexGet expr) {
+    Object object = evaluate(expr.object);
+    Object indexObj = evaluate(expr.index);
+
+    if (!(object instanceof java.util.List)) {
+      throw new RuntimeException("Only packs can be indexed.");
+    }
+
+    if (!(indexObj instanceof Double)) {
+      throw new RuntimeException("Index must be a number.");
+    }
+
+    int index = ((Double) indexObj).intValue();
+    java.util.List<Object> list = (java.util.List<Object>) object;
+
+    if (index < 0 || index >= list.size()) {
+      throw new RuntimeException("Pack index out of bounds.");
+    }
+
+    return list.get(index);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public Object visitIndexSetExpr(Expr.IndexSet expr) {
+    Object object = evaluate(expr.object);
+    Object indexObj = evaluate(expr.index);
+    Object value = evaluate(expr.value);
+
+    if (!(object instanceof java.util.List)) {
+      throw new RuntimeException("Only packs can be indexed.");
+    }
+
+    if (!(indexObj instanceof Double)) {
+      throw new RuntimeException("Index must be a number.");
+    }
+
+    int index = ((Double) indexObj).intValue();
+    java.util.List<Object> list = (java.util.List<Object>) object;
+
+    if (index < 0 || index >= list.size()) {
+      throw new RuntimeException("Pack index out of bounds.");
+    }
+
+    list.set(index, value);
+    return value;
+  }
+
+  @Override
   public Object visitLogicalExpr(Expr.Logical expr) {
     Object left = evaluate(expr.left);
 

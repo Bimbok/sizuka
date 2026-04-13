@@ -13,6 +13,9 @@ public enum TokenType {
   TO,
   AS,
   WHILE,
+  COMMA,
+  LEFT_BRACKET,
+  RIGHT_BRACKET,
   // 2. Literals
   IDENTIFIER,
   NUMBER,
