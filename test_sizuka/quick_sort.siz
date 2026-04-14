@@ -1,0 +1,61 @@
+say myPack = [10, 7, 8, 9, 1, 5]
+say n = 6
+
+out "Original Pack:"
+out myPack
+
+// 1. Manually create a stack to keep track of indices
+say stackLow = [0, 0, 0, 0, 0, 0]
+say stackHigh = [0, 0, 0, 0, 0, 0]
+say top = 0
+
+// Push initial bounds (0 to n-1) onto our manual stack
+stackLow[top] = 0
+stackHigh[top] = n - 1
+
+// 2. Keep popping from the stack until it is empty
+while (top >= 0) {
+    say l = stackLow[top]
+    say h = stackHigh[top]
+    top = top - 1
+
+    // --- PARTITION LOGIC ---
+    say pivot = myPack[h]
+    say i = l
+    say j = l
+
+    while (j < h) {
+        if (myPack[j] < pivot) {
+            // Swap myPack[i] and myPack[j]
+            say temp = myPack[i]
+            myPack[i] = myPack[j]
+            myPack[j] = temp
+            i = i + 1
+        }
+        j = j + 1
+    }
+    // Swap the pivot into its correct place
+    say temp2 = myPack[i]
+    myPack[i] = myPack[h]
+    myPack[h] = temp2
+
+    say p = i // This is the partition index
+    // -----------------------
+
+    // If there are elements on the left side of the pivot, push them to the stack
+    if (p - 1 > l) {
+        top = top + 1
+        stackLow[top] = l
+        stackHigh[top] = p - 1
+    }
+
+    // If there are elements on the right side of the pivot, push them to the stack
+    if (p + 1 < h) {
+        top = top + 1
+        stackLow[top] = p + 1
+        stackHigh[top] = h
+    }
+}
+
+out "Quick Sorted Pack:"
+out myPack

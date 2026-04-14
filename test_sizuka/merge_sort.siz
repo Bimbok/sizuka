@@ -1,0 +1,80 @@
+say myPack = [12, 11, 13, 5, 6, 7]
+say n = 6
+say tempPack = [0, 0, 0, 0, 0, 0] // Used to temporarily hold merged data
+say curr_size = 1
+
+out "Original Pack:"
+out myPack
+
+// Double the sub-array size each pass (1, 2, 4, 8...)
+while (curr_size < n) {
+    say left_start = 0
+
+    // Pick starting point of different sub-arrays of current size
+    while (left_start < n - 1) {
+        say mid = left_start + curr_size - 1
+        say right_end = left_start + (2 * curr_size) - 1
+
+        // Prevent out of bounds errors
+        if (mid > n - 1) {
+            mid = n - 1
+        }
+        if (right_end > n - 1) {
+            right_end = n - 1
+        }
+
+        // --- MERGE LOGIC ---
+        say i = left_start
+        say j = mid + 1
+        say k = left_start
+        say merging = true
+
+        // Emulating (i <= mid && j <= right_end)
+        while (merging == true) {
+            if (i <= mid) {
+                if (j <= right_end) {
+                    if (myPack[i] <= myPack[j]) {
+                        tempPack[k] = myPack[i]
+                        i = i + 1
+                    } else {
+                        tempPack[k] = myPack[j]
+                        j = j + 1
+                    }
+                    k = k + 1
+                } else {
+                    merging = false
+                }
+            } else {
+                merging = false
+            }
+        }
+
+        // Copy remaining elements of left half, if any
+        while (i <= mid) {
+            tempPack[k] = myPack[i]
+            i = i + 1
+            k = k + 1
+        }
+
+        // Copy remaining elements of right half, if any
+        while (j <= right_end) {
+            tempPack[k] = myPack[j]
+            j = j + 1
+            k = k + 1
+        }
+
+        // Copy the merged elements back into the original pack
+        say copy_idx = left_start
+        while (copy_idx <= right_end) {
+            myPack[copy_idx] = tempPack[copy_idx]
+            copy_idx = copy_idx + 1
+        }
+        // -------------------
+
+        left_start = left_start + (2 * curr_size)
+    }
+    curr_size = curr_size * 2
+}
+
+out "Merge Sorted Pack:"
+out myPack
